@@ -1,15 +1,23 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
+import statusRoute from "./routes/status.routes";
+import userRoute from "./routes/users.routes";
 
 const app = express();
 const path = "http://localhost";
 const port = 3000;
 
-app.get(
-  "/status",
-  (request: Request, response: Response, next: NextFunction) => {
-    response.status(200).send({ foo: "sucesso total" });
-  }
-);
+// app config
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// routes config
+
+app.use(userRoute);
+
+app.use(statusRoute);
+
+// server init
 
 app.listen(port, () => {
   console.log(`Aplicação executando em ${path}:${port}`);
