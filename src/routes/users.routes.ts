@@ -1,7 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { Router, Request, Response, NextFunction } from "express";
 import userRepository from "../repositories/user.repository";
-import DatabaseError from "../models/errors/database.error.model";
 
 // get / users
 // get / users/:uuid
@@ -35,32 +34,44 @@ userRoute.get(
 userRoute.post(
   "/users/",
   async (req: Request, res: Response, next: NextFunction) => {
-    const newUser = req.body;
-    const uuid = await userRepository.create(newUser);
-    console.log(newUser);
-    res.status(StatusCodes.CREATED).send(uuid);
+    try {
+      const newUser = req.body;
+      const uuid = await userRepository.create(newUser);
+      console.log(newUser);
+      res.status(StatusCodes.CREATED).send(uuid);
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
 userRoute.put(
   "/users/:uuid",
   async (req: Request<{ uuid: string }>, res: Response, next: NextFunction) => {
-    const uuid = req.params.uuid;
-    const modifiedUser = req.body;
-    modifiedUser.uuid = uuid;
+    try {
+      const uuid = req.params.uuid;
+      const modifiedUser = req.body;
+      modifiedUser.uuid = uuid;
 
-    await userRepository.update(modifiedUser);
+      await userRepository.update(modifiedUser);
 
-    res.status(StatusCodes.OK).send();
+      res.status(StatusCodes.OK).send();
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
 userRoute.delete(
   "/users/:uuid",
   async (req: Request<{ uuid: string }>, res: Response, next: NextFunction) => {
-    const uuid = req.params.uuid;
-    await userRepository.remove(uuid);
-    res.sendStatus(StatusCodes.OK);
+    try {
+      const uuid = req.params.uuid;
+      await userRepository.remove(uuid);
+      res.sendStatus(StatusCodes.OK);
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
