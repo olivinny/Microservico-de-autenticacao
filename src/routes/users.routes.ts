@@ -13,8 +13,14 @@ const userRoute = Router();
 userRoute.get(
   "/users",
   async (req: Request, res: Response, next: NextFunction) => {
-    const users = await userRepository.findAllUsers();
-    res.status(StatusCodes.OK).send(users);
+    try {
+      console.log(req.headers["authorization"]);
+
+      const users = await userRepository.findAllUsers();
+      res.status(StatusCodes.OK).send(users);
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
