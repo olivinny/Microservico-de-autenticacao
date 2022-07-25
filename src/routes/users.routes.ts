@@ -14,8 +14,6 @@ userRoute.get(
   "/users",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log(req.headers["authorization"]);
-
       const users = await userRepository.findAllUsers();
       res.status(StatusCodes.OK).send(users);
     } catch (error) {
@@ -43,7 +41,6 @@ userRoute.post(
     try {
       const newUser = req.body;
       const uuid = await userRepository.create(newUser);
-      console.log(newUser);
       res.status(StatusCodes.CREATED).send(uuid);
     } catch (error) {
       next(error);
